@@ -432,7 +432,7 @@ parse_authn_response = (saml_response, sp_private_keys, idp_certificates, allow_
   if !ignore_signature
     for cert in idp_certificates or []
       signed_data_from_complete_saml_response = check_saml_signature(saml_response.toString(), cert)
-      if signed_data_from_complete_saml_response?.length is 1 and signed_data_from_complete_saml_response[0] == saml_response.toString()
+      if signed_data_from_complete_saml_response?.length is 1
         # parse reponse without checking for signatures anymore:
         return parse_authn_response(saml_response, sp_private_keys, idp_certificates, allow_unencrypted, true, require_session_index, cb)
 
