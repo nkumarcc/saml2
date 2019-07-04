@@ -100,7 +100,7 @@ sign_authn_request = function(xml, private_key, options) {
   return signer.getSignedXml();
 };
 
-create_metadata = function(entity_id, assert_endpoint, signing_certificates, encryption_certificates) {
+create_metadata = function(entity_id, assert_endpoint, logout_endpoint, logout_binding, signing_certificates, encryption_certificates) {
   var encryption_cert_descriptors, encryption_certificate, signing_cert_descriptors, signing_certificate;
   signing_cert_descriptors = (function() {
     var j, len, ref1, results;
@@ -137,8 +137,8 @@ create_metadata = function(entity_id, assert_endpoint, signing_certificates, enc
       }).concat(signing_cert_descriptors).concat(encryption_cert_descriptors).concat([
         {
           'md:SingleLogoutService': {
-            '@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
-            '@Location': assert_endpoint
+            '@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:' + logout_binding,
+            '@Location': logout_endpoint
           },
           'md:AssertionConsumerService': {
             '@Binding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
@@ -704,7 +704,13 @@ module.exports.ServiceProvider = ServiceProvider = (function() {
   function ServiceProvider(options) {
     this.create_metadata = bind(this.create_metadata, this);
     this.create_logout_request_url = bind(this.create_logout_request_url, this);
-    this.entity_id = options.entity_id, this.private_key = options.private_key, this.certificate = options.certificate, this.assert_endpoint = options.assert_endpoint, this.alt_private_keys = options.alt_private_keys, this.alt_certs = options.alt_certs;
+    this.entity_id = options.entity_id, this.private_key = options.private_key, this.certificate = options.certificate, this.assert_endpoint = options.assert_endpoint, this.logout_endpoint = options.logout_endpoint, this.logout_binding = options.logout_binding, this.alt_private_keys = options.alt_private_keys, this.alt_certs = options.alt_certs;
+    if (this.logout_endpoint == null) {
+      this.logout_endpoint = this.assert_endpoint;
+    }
+    if (this.logout_binding == null) {
+      this.logout_binding = "HTTP-Redirect";
+    }
     if (options.audience == null) {
       options.audience = this.entity_id;
     }
@@ -947,7 +953,7 @@ module.exports.ServiceProvider = ServiceProvider = (function() {
   ServiceProvider.prototype.create_metadata = function() {
     var certs;
     certs = [this.certificate].concat(this.alt_certs);
-    return create_metadata(this.entity_id, this.assert_endpoint, certs, certs);
+    return create_metadata(this.entity_id, this.assert_endpoint, this.logout_endpoint, this.logout_binding, certs, certs);
   };
 
   return ServiceProvider;
