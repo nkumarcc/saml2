@@ -663,8 +663,13 @@ parse_authn_response = function(saml_response, sp_private_keys, idp_certificates
         user = _.extend(user, {
           attributes: assertion_attributes
         });
+        var issuer = decrypted_assertion.getElementsByTagNameNS(XMLNS.SAML, 'Issuer');
+        if (issuer.length === 1) {
+          issuer = (ref1 = issuer[0].firstChild) != null ? ref1.data : void 0;
+        }
         return cb_wf(null, {
-          user: user
+          user: user,
+          issuer: issuer
         });
       } catch (error) {
         err = error;
