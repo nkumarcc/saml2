@@ -477,6 +477,10 @@ parse_authn_response = (saml_response, sp_private_keys, idp_certificates, allow_
         assertion_attributes = parse_assertion_attributes decrypted_assertion
         user = _.extend user, pretty_assertion_attributes(assertion_attributes)
         user = _.extend user, attributes: assertion_attributes
+
+        issuer = dom.getElementsByTagNameNS(XMLNS.SAML, 'Issuer')
+        request.issuer = issuer[0].firstChild?.data if issuer.length is 1
+
         cb_wf null, { user }
       catch err
         return cb_wf err

@@ -650,7 +650,7 @@ parse_authn_response = function(saml_response, sp_private_keys, idp_certificates
       }
       return cb_wf(new Error("SAML Assertion signature check failed! (checked " + idp_certificates.length + " certificate(s))"));
     }, function(decrypted_assertion, cb_wf) {
-      var assertion_attributes, err, session_info;
+      var assertion_attributes, err, issuer, ref2, session_info;
       try {
         session_info = get_session_info(decrypted_assertion, require_session_index);
         user.name_id = get_name_id(decrypted_assertion);
@@ -663,13 +663,12 @@ parse_authn_response = function(saml_response, sp_private_keys, idp_certificates
         user = _.extend(user, {
           attributes: assertion_attributes
         });
-        var issuer = decrypted_assertion.getElementsByTagNameNS(XMLNS.SAML, 'Issuer');
+        issuer = dom.getElementsByTagNameNS(XMLNS.SAML, 'Issuer');
         if (issuer.length === 1) {
-          issuer = (ref1 = issuer[0].firstChild) != null ? ref1.data : void 0;
+          request.issuer = (ref2 = issuer[0].firstChild) != null ? ref2.data : void 0;
         }
         return cb_wf(null, {
-          user: user,
-          issuer: issuer
+          user: user
         });
       } catch (error) {
         err = error;

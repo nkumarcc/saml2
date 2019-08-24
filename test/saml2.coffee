@@ -379,6 +379,8 @@ describe 'saml2', ->
 
       sp.post_assert idp, request_options, (err, response) ->
         assert not err?, "Got error: #{err}"
+        console.log 'hello'
+        console.log response
         expected_response =
           response_header:
             version: '2.0'
@@ -402,6 +404,7 @@ describe 'saml2', ->
               'http://schemas.xmlsoap.org/claims/Group': [ 'CN=Students,CN=Users,DC=idp,DC=example,DC=com' ]
               'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname': [ 'Student' ]
               'http://schemas.xmlsoap.org/claims/CommonName': [ 'Test Student' ]
+          issuer: 'http://idp.example.com/metadata.xml'
 
         assert.deepEqual response, expected_response
         done()
