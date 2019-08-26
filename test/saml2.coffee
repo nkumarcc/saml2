@@ -379,8 +379,6 @@ describe 'saml2', ->
 
       sp.post_assert idp, request_options, (err, response) ->
         assert not err?, "Got error: #{err}"
-        console.log 'hello'
-        console.log response
         expected_response =
           response_header:
             version: '2.0'

@@ -424,7 +424,7 @@ add_namespaces_to_child_assertions = (xml_string) ->
 # the attributes or an error if keys are incorrect or the response is invalid.
 parse_authn_response = (saml_response, sp_private_keys, idp_certificates, allow_unencrypted, ignore_signature, require_session_index, cb) ->
   user = {}
-  
+
   # strip of possible enveloping xml tags:
   saml_response = saml_response.getElementsByTagNameNS(XMLNS.SAMLP, 'Response')[0] or saml_response
 
@@ -478,10 +478,10 @@ parse_authn_response = (saml_response, sp_private_keys, idp_certificates, allow_
         user = _.extend user, pretty_assertion_attributes(assertion_attributes)
         user = _.extend user, attributes: assertion_attributes
 
-        issuer = dom.getElementsByTagNameNS(XMLNS.SAML, 'Issuer')
-        request.issuer = issuer[0].firstChild?.data if issuer.length is 1
+        issuerNode = dom.getElementsByTagNameNS(XMLNS.SAML, 'Issuer')
+        issuer = issuerNode[0].firstChild?.data if issuerNode.length is 1
 
-        cb_wf null, { user }
+        cb_wf null, { user, issuer }
       catch err
         return cb_wf err
   ], cb
