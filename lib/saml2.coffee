@@ -478,8 +478,8 @@ parse_authn_response = (saml_response, sp_private_keys, idp_certificates, allow_
         user = _.extend user, pretty_assertion_attributes(assertion_attributes)
         user = _.extend user, attributes: assertion_attributes
 
-        issuerNode = dom.getElementsByTagNameNS(XMLNS.SAML, 'Issuer')
-        issuer = issuerNode[0].firstChild?.data if issuerNode.length is 1
+        issuerNode = decrypted_assertion.getElementsByTagNameNS(XMLNS.SAML, 'Issuer')
+        issuer = issuerNode[0].firstChild?.data if issuerNode? and issuerNode.length is 1
 
         cb_wf null, { user, issuer }
       catch err
