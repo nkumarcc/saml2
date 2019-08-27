@@ -441,6 +441,7 @@ describe 'saml2', ->
             given_name: 'Test'
             attributes:
               'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname': [ 'Test' ]
+          issuer: 'http://idp.example.com/metadata.xml'
 
         assert.deepEqual response, expected_response
         done()
@@ -548,6 +549,7 @@ describe 'saml2', ->
             session_index: '_4'
             session_not_on_or_after: '2016-02-11T21:12:09Z'
             attributes: {}
+          issuer: 'https://idp.example.com/metadata.xml'
 
         assert.deepEqual response, expected_response
         done()
@@ -580,15 +582,16 @@ describe 'saml2', ->
         expected_response =
           response_header:
             version: '2.0'
-            id: '_2'
-            in_response_to: '_1'
             destination: 'https://sp.example.com/assert'
+            in_response_to: '_1'
+            id: '_2'
           type: 'authn_response'
           user:
             name_id: undefined
-            session_index: null
+            session_index: undefined
             session_not_on_or_after: '2016-02-11T21:12:09Z'
             attributes: {}
+          issuer: 'https://idp.example.com/metadata.xml'
 
         assert.deepEqual response, expected_response
         done()
@@ -859,6 +862,7 @@ describe 'saml2', ->
               'http://schemas.xmlsoap.org/claims/Group': [ 'CN=Students,CN=Users,DC=idp,DC=example,DC=com' ]
               'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname': [ 'Student' ]
               'http://schemas.xmlsoap.org/claims/CommonName': [ 'Test Student' ]
+          issuer: 'http://idp.example.com/metadata.xml'
 
         assert.deepEqual response, expected_response
         done()
